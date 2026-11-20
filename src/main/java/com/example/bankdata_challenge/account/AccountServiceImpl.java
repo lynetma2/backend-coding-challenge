@@ -32,12 +32,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void transfer(Integer fromAccountNumber, Integer toAccountNumber, BigDecimal amountDKK) {
-        AccountEntity fromAccount = getAccount(fromAccountNumber);
-        AccountEntity toAccount = getAccount(toAccountNumber);
+    public void transfer(Integer sourceAccountNumber, Integer destinationAccountNumber, BigDecimal amountDKK) {
+        AccountEntity sourceAccount = getAccount(sourceAccountNumber);
+        AccountEntity destinationAccount = getAccount(destinationAccountNumber);
 
-        fromAccount.withdraw(amountDKK);
-        toAccount.deposit(amountDKK);
+        sourceAccount.withdraw(amountDKK);
+        destinationAccount.deposit(amountDKK);
     }
 
     @Override

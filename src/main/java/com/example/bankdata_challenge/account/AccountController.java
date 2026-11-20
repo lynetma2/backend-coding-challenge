@@ -28,11 +28,11 @@ public class AccountController {
         accountService.deposit(accountNumber, depositRequestDTO.amountDKK());
     }
 
-    @PostMapping("/account/{fromAccountNumber}/transfer")
-    public void transfer(@RequestBody TransferRequestDTO transferRequestDTO, @PathVariable Integer fromAccountNumber) {
+    @PostMapping("/account/{sourceAccountNumber}/transfer")
+    public void transfer(@RequestBody TransferRequestDTO transferRequestDTO, @PathVariable Integer sourceAccountNumber) {
         accountService.transfer(
-                fromAccountNumber,
-                transferRequestDTO.toAccountNumber(),
+                sourceAccountNumber,
+                transferRequestDTO.destinationAccountNumber(),
                 transferRequestDTO.amountDKK()
         );
     }

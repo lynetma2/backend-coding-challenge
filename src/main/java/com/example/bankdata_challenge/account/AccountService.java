@@ -8,7 +8,7 @@ public interface AccountService {
 
     void deposit(Integer accountNumber, BigDecimal amountDKK);
 
-    void transfer(Integer fromAccountNumber, Integer toAccountNumber, BigDecimal amountDKK);
+    void transfer(Integer sourceAccountNumber, Integer destinationAccountNumber, BigDecimal amountDKK);
 
     AccountEntity getAccount(Integer accountNumber);
 }

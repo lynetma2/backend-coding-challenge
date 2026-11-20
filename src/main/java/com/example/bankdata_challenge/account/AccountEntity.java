@@ -60,6 +60,10 @@ public class AccountEntity {
     }
 
     public void withdraw(BigDecimal amountDKK) {
+        if (amountDKK.signum() <= 0) {
+            throw new IllegalArgumentException("Withdrawal amount must be positive");
+        }
+
         if (this.balanceDKK.compareTo(amountDKK) < 0 || this.balanceDKK.signum() <= 0) {
             throw new InsufficientFunds("Tried to withdraw, more than balance has.");
         }

@@ -4,6 +4,7 @@ import com.example.bankdata_challenge.account.dto.AccountResponseDTO;
 import com.example.bankdata_challenge.account.dto.CreateAccountRequestDTO;
 import com.example.bankdata_challenge.account.dto.DepositRequestDTO;
 import com.example.bankdata_challenge.account.dto.TransferRequestDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/account")
     public AccountResponseDTO openAccount(@RequestBody CreateAccountRequestDTO createAccountRequestDTO) {
         AccountEntity newAccount = accountService
@@ -23,11 +25,13 @@ public class AccountController {
         return AccountResponseDTO.from(newAccount);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/account/{accountNumber}/deposit")
     public void deposit(@RequestBody DepositRequestDTO depositRequestDTO, @PathVariable Integer accountNumber) {
         accountService.deposit(accountNumber, depositRequestDTO.amountDKK());
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/account/{sourceAccountNumber}/transfer")
     public void transfer(@RequestBody TransferRequestDTO transferRequestDTO, @PathVariable Integer sourceAccountNumber) {
         accountService.transfer(

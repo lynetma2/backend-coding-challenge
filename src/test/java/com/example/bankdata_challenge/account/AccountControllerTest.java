@@ -60,7 +60,6 @@ class AccountControllerTest {
         verify(accountService).openAccount(FIRST_NAME, LAST_NAME);
     }
 
-
     @Test
     void getAccount_shouldReturnAccount() throws Exception {
         // Arrange

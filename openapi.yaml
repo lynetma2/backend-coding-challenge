@@ -1,0 +1,232 @@
+
+openapi: 3.0.3
+
+info:
+  title: Bank Data Challenge API
+  description: REST API for managing bank accounts and currency conversion.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Accounts
+    description: Account management and transactions
+  - name: Currency
+    description: Currency conversion and historical rates
+
+paths:
+
+  /account:
+    post:
+      tags:
+        - Accounts
+      summary: Open a new bank account
+      operationId: openAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountRequestDTO'
+      responses:
+        '201':
+          description: Account successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+
+  /account/{accountNumber}:
+    get:
+      tags:
+        - Accounts
+      summary: Get account details
+      operationId: getAccount
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          description: The account number
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Account successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+
+  /account/{accountNumber}/deposit:
+    post:
+      tags:
+        - Accounts
+      summary: Deposit money into an account
+      operationId: deposit
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          description: The account receiving the deposit
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepositRequestDTO'
+      responses:
+        '204':
+          description: Deposit successfully completed
+
+  /account/{sourceAccountNumber}/transfer:
+    post:
+      tags:
+        - Accounts
+      summary: Transfer money between accounts
+      operationId: transfer
+      parameters:
+        - name: sourceAccountNumber
+          in: path
+          required: true
+          description: The account from which money is transferred
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequestDTO'
+      responses:
+        '204':
+          description: Transfer successfully completed
+
+  /conversion-rate:
+    get:
+      tags:
+        - Currency
+      summary: Get the current DKK to USD conversion rate
+      operationId: conversionRate
+      responses:
+        '200':
+          description: Current conversion rate
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: number
+                  format: bigdecimal
+              example:
+                DKK: 100
+                USD: 14.25
+
+  /history-rate:
+    get:
+      tags:
+        - Currency
+      summary: Get historical currency conversion rates
+      operationId: historyRate
+      responses:
+        '200':
+          description: Historical conversion rates indexed by date
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/ConversionRate'
+              example:
+                "2005-01-03":
+                  baseCurrency: DKK
+                  baseAmount: 100
+                  targetCurrency: USD
+                  targetAmount: 16.15
+
+components:
+  schemas:
+
+    CreateAccountRequestDTO:
+      type: object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+
+    DepositRequestDTO:
+      type: object
+      required:
+        - amountDKK
+      properties:
+        amountDKK:
+          type: number
+          format: bigdecimal
+          minimum: 0.01
+          example: 500.00
+
+    TransferRequestDTO:
+      type: object
+      required:
+        - destinationAccountNumber
+        - amountDKK
+      properties:
+        destinationAccountNumber:
+          type: integer
+          format: int32
+          example: 123456
+        amountDKK:
+          type: number
+          format: bigdecimal
+          minimum: 0.01
+          example: 250.00
+
+    AccountResponseDTO:
+      type: object
+      properties:
+        accountNumber:
+          type: integer
+          format: int32
+          example: 123456
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        balanceDKK:
+          type: number
+          format: bigdecimal
+          example: 1000.00
+
+    ConversionRate:
+      type: object
+      properties:
+        baseCurrency:
+          type: string
+          example: DKK
+        baseAmount:
+          type: number
+          format: bigdecimal
+          example: 100
+        targetCurrency:
+          type: string
+          example: USD
+        targetAmount:
+          type: number
+          format: bigdecimal
+          example: 14.25
+
+  
